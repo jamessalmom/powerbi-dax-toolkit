@@ -1,0 +1,20 @@
+// Cumulative revenue share per client, ranked — the DAX side of the
+// Pareto 80/20 query in `sql-kpi-toolkit`, for when the calc belongs in
+// the model instead of the source query.
+Client Revenue :=
+SUM ( Sales[Amount] )
+
+Client Rank :=
+RANKX ( ALL ( Client[ClientName] ), [Client Revenue],, DESC )
+
+Cumulative Revenue Share :=
+VAR CurrentRank = [Client Rank]
+VAR RunningTotal =
+    CALCULATE (
+        [Client Revenue],
+        FILTER ( ALL ( Client[ClientName] ), [Client Rank] <= CurrentRank )
+    )
+VAR GrandTotal =
+    CALCULATE ( [Client Revenue], ALL ( Client ) )
+RETURN
+    DIVIDE ( RunningTotal, GrandTotal )

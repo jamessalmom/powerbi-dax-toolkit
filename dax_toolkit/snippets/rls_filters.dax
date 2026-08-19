@@ -1,0 +1,8 @@
+// Row-level security pattern: filter Sales to the branches the logged-in
+// user is allowed to see, via a bridge table UserBranchAccess[Username].
+[Branch Access Filter] =
+    'Branch'[BranchId]
+        IN CALCULATETABLE (
+            VALUES ( UserBranchAccess[BranchId] ),
+            UserBranchAccess[Username] = USERPRINCIPALNAME ()
+        )

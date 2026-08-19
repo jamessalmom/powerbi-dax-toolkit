@@ -1,0 +1,10 @@
+// Year-to-date total, using a standard Date dimension marked as a Date Table.
+Revenue YTD :=
+TOTALYTD ( SUM ( Sales[Amount] ), 'Date'[Date] )
+
+// Year-over-year variation (%), reusable pattern with SAMEPERIODLASTYEAR.
+VAR CurrentRevenue = SUM ( Sales[Amount] )
+VAR PriorYearRevenue =
+    CALCULATE ( SUM ( Sales[Amount] ), SAMEPERIODLASTYEAR ( 'Date'[Date] ) )
+RETURN
+    DIVIDE ( CurrentRevenue - PriorYearRevenue, PriorYearRevenue )
